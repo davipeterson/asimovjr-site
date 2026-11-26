@@ -1,0 +1,29 @@
+name: Algo quebrado
+description: Um erro no site (visual, link, texto, desempenho)
+labels: ['tipo: correção']
+body:
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu
+      description: O que você viu e o que esperava ver.
+    validations:
+      required: true
+  - type: input
+    id: onde
+    attributes:
+      label: Onde
+      description: 'Página ou seção (ex.: home, contato, post do blog).'
+    validations:
+      required: true
+  - type: dropdown
+    id: aparelho
+    attributes:
+      label: Aparelho
+      options: [Computador, Celular, Tablet]
+    validations:
+      required: true
+  - type: textarea
+    id: print
+    attributes:
+      label: Print ou vídeo (opcional)

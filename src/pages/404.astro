@@ -1,0 +1,43 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const home = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Página não encontrada">
+  <main class="nf">
+    <p class="tag">// erro 404</p>
+    <h1>Essa página não existe.</h1>
+    <a href={home}>voltar pra home →</a>
+  </main>
+</BaseLayout>
+
+<style>
+  .nf {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 5vw;
+  }
+  .tag {
+    margin: 0;
+    color: #6fb6ff;
+    font-family: ui-monospace, monospace;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(40px, 8vw, 120px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+  a {
+    align-self: flex-start;
+    color: #fff;
+    font-family: ui-monospace, monospace;
+    text-decoration: none;
+    border-bottom: 2px solid #007fff;
+    padding-bottom: 3px;
+  }
+</style>

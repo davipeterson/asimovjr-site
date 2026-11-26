@@ -1,0 +1,18 @@
+name: Conteúdo novo ou atualização
+description: Novo cliente no carrossel, novo projeto, post do blog ou mudança de texto
+labels: ['tipo: conteúdo']
+body:
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo
+      options: [Cliente no carrossel, Projeto em destaque, Post do blog, Mudança de texto, Outro]
+    validations:
+      required: true
+  - type: textarea
+    id: detalhes
+    attributes:
+      label: Detalhes
+      description: Nome, texto, link. Anexe logo ou imagem em boa qualidade (de preferência SVG ou PNG com fundo transparente).
+    validations:
+      required: true
