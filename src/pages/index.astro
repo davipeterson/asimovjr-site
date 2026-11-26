@@ -1,0 +1,37 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout>
+  <main class="placeholder">
+    <p class="tag">// em construção</p>
+    <h1>{site.name}</h1>
+    <p>O site novo está sendo montado aqui, uma seção por vez.</p>
+  </main>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 5vw;
+  }
+  .tag {
+    margin: 0;
+    color: #6fb6ff;
+    font-family: ui-monospace, monospace;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(56px, 12vw, 180px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+  }
+  p {
+    margin: 0;
+  }
+</style>

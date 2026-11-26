@@ -1,0 +1,23 @@
+/*
+ * Estilos globais. Os tokens do manual de marca (cores, fontes, espaçamentos)
+ * entram na fase "Base visual" (milestone v0.2.0).
+ */
+:root {
+  --azul: #007fff;
+  --marinho: #0f142c;
+  --branco: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--marinho);
+  color: var(--branco);
+  font-family: system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
