@@ -1,0 +1,51 @@
+# Modelo de workflow para publicar na Hostinger.
+# NÃO está ativo: só passa a valer quando for copiado para
+# .github/workflows/deploy-hostinger.yml (veja "Migração para a Hostinger" no README).
+
+name: Deploy (Hostinger)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hostinger
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build e envio por SSH
+    runs-on: ubuntu-latest
+    environment:
+      name: producao
+      url: https://asimovjr.com.br
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_URL: https://asimovjr.com.br
+          BASE_PATH: /
+
+      - name: Preparar chave SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.HOSTINGER_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.HOSTINGER_PORT }}" "${{ secrets.HOSTINGER_HOST }}" >> ~/.ssh/known_hosts
+
+      # --delete apaga do servidor o que não existe mais no build,
+      # menos a pasta .well-known (usada pelo certificado SSL).
+      - name: Enviar arquivos
+        run: |
+          rsync -avz --delete --exclude '.well-known/' \
+            -e "ssh -p ${{ secrets.HOSTINGER_PORT }}" \
+            dist/ "${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}:${{ secrets.HOSTINGER_PATH }}/"
