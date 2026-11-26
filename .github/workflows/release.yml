@@ -1,0 +1,24 @@
+name: Release
+
+# Lê os commits da main (padrão Conventional Commits) e mantém aberto um PR
+# "chore(main): release x.y.z" com o CHANGELOG atualizado. Quando esse PR é
+# mergeado, cria a tag vX.Y.Z e a release no GitHub.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release-please:
+    name: Preparar release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
