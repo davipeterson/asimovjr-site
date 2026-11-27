@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/davipeterson/asimovjr-site/compare/v0.4.0...v0.5.0) (2026-11-27)
+
+
+### Novidades
+
+* blog com lista de posts e página de post ([#24](https://github.com/davipeterson/asimovjr-site/issues/24)) ([3423faa](https://github.com/davipeterson/asimovjr-site/commit/3423faa59086d3cd80a3423850ad4c17bba60397))
+
 ## [0.4.0](https://github.com/davipeterson/asimovjr-site/compare/v0.3.0...v0.4.0) (2026-11-27)
 
 
