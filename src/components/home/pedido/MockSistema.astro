@@ -1,0 +1,163 @@
+---
+/** Etapa 03: um sistema de gestão de pedidos se montando. */
+import CheckIcon from './CheckIcon.astro';
+
+const menu = [
+  { texto: 'Pedidos', ativo: true, d: 0.1 },
+  { texto: 'Clientes', ativo: false, d: 0.13 },
+  { texto: 'Estoque', ativo: false, d: 0.16 },
+  { texto: 'Relatórios', ativo: false, d: 0.19 },
+];
+
+const pedidos = [
+  { n: '#2031', cliente: 'Mercado Bom Preço', status: 'entregue', tipo: 'entregue', d: 0.3 },
+  { n: '#2032', cliente: 'Clínica Vida', status: 'em rota', tipo: 'rota', d: 0.38 },
+  { n: '#2033', cliente: 'Padaria Central', status: 'separando', tipo: 'separando', d: 0.46 },
+  { n: '#2034', cliente: 'Ótica Visão', status: 'novo', tipo: 'novo', d: 0.54 },
+  { n: '#2035', cliente: 'Pet Amigo', status: 'novo', tipo: 'novo', d: 0.62 },
+];
+---
+
+<div class="mock" style="--p: var(--p2); --s: var(--s2)">
+  <div class="win">
+    <div class="win__barra">
+      <i></i>
+      <i></i>
+      <i></i>
+      <span class="win__url">sistema · gestão de pedidos</span>
+    </div>
+    <div class="win__corpo sis">
+      <div class="sis__menu">
+        <b class="ap" style="--d:.06;--k:10">
+          sua·empresa
+        </b>
+        {menu.map((m) => (
+          <span class:list={['ap', m.ativo && 'sis__ativo']} style={`--d:${m.d};--k:10`}>
+            {m.texto}
+          </span>
+        ))}
+      </div>
+
+      <div class="sis__conteudo">
+        <div class="sis__topo ap" style="--d:.2;--k:10">
+          <b>Pedidos</b>
+          <span>+ novo pedido</span>
+        </div>
+        <div class="sis__grade sis__cabecalho mono ap" style="--d:.24;--k:10">
+          <span>nº</span>
+          <span>cliente</span>
+          <span>status</span>
+        </div>
+        {pedidos.map((p) => (
+          <div class="sis__grade sis__linha ap ap-y" style={`--d:${p.d};--k:9`}>
+            <span class="mono">{p.n}</span>
+            <span>{p.cliente}</span>
+            <span class={`sis__status sis__status--${p.tipo}`}>{p.status}</span>
+          </div>
+        ))}
+        <div class="aviso sis__aviso">
+          <CheckIcon />
+          relatório do mês gerado
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sis {
+    display: flex;
+  }
+  .sis__menu {
+    flex: 0 0 23%;
+    display: flex;
+    flex-direction: column;
+    gap: 2.2cqw;
+    padding: 3cqw 2.4cqw;
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+    font: 500 1.9cqw var(--fonte-texto);
+  }
+  .sis__menu b {
+    font: 700 2.4cqw var(--fonte-titulo);
+  }
+  .sis__ativo {
+    margin: 0 -1cqw;
+    padding: 0.8cqw 1cqw;
+    border-radius: 1cqw;
+    background: var(--cor-azul);
+    color: var(--cor-marinho);
+    font-weight: 700;
+  }
+  .sis__conteudo {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2cqw;
+    padding: 3cqw 3.4cqw;
+  }
+  .sis__topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sis__topo b {
+    font: 700 3.4cqw var(--fonte-titulo);
+    letter-spacing: -0.02em;
+  }
+  .sis__topo span {
+    padding: 1cqw 2cqw;
+    border-radius: var(--raio-pilula);
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+    font: 700 1.8cqw var(--fonte-texto);
+  }
+  .sis__grade {
+    display: grid;
+    grid-template-columns: 1.1fr 1.6fr 1.1fr;
+    gap: 1cqw;
+    align-items: center;
+  }
+  .sis__cabecalho {
+    padding-bottom: 1cqw;
+    border-bottom: 1.5px solid var(--cor-marinho);
+    font-size: 1.6cqw;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
+  }
+  .sis__linha {
+    padding: 0.6cqw 0;
+    border-bottom: 1px solid var(--cor-linha);
+    font: 500 1.9cqw var(--fonte-texto);
+  }
+  .sis__status {
+    justify-self: start;
+    padding: 0.5cqw 1.5cqw;
+    border: 1.5px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    font: 700 1.6cqw var(--fonte-texto);
+  }
+  .sis__status--entregue {
+    background: #ddebff;
+  }
+  .sis__status--rota {
+    background: var(--cor-azul);
+  }
+  .sis__status--separando {
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .sis__status--novo {
+    background: var(--cor-branco);
+  }
+  .sis__aviso {
+    right: 3cqw;
+    bottom: 3cqw;
+    gap: 1.2cqw;
+    padding: 1.5cqw 2.4cqw;
+    border-radius: 2cqw;
+    font-size: 1.9cqw;
+    transform: translateY(calc((1 - var(--ap)) * 14px));
+  }
+</style>

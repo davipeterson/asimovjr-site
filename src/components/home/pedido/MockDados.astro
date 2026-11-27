@@ -1,0 +1,185 @@
+---
+/** Etapa 04: um painel de vendas com gráfico e previsão de IA. */
+const kpis = [
+  { rotulo: 'receita', valor: 'R$ 48,2 mil', d: 0.3 },
+  { rotulo: 'pedidos', valor: '1.204', d: 0.36 },
+  { rotulo: 'ticket médio', valor: 'R$ 40', d: 0.42 },
+];
+
+const alturas = [30, 44, 36, 52, 47, 60, 54, 68, 63, 74, 70, 90];
+const barras = alturas.map((h, i) => ({
+  h,
+  d: (0.2 + i * 0.035).toFixed(3),
+  destaque: i === alturas.length - 1,
+}));
+---
+
+<div class="mock" style="--p: var(--p3); --s: var(--s3)">
+  <div class="win">
+    <div class="win__barra">
+      <i></i>
+      <i></i>
+      <i></i>
+      <span class="win__url">painel.seunegocio.com.br</span>
+    </div>
+    <div class="win__corpo dad">
+      <div class="dad__topo">
+        <b>Vendas</b>
+        <span class="mono">últimos 12 meses</span>
+      </div>
+
+      <div class="dad__kpis">
+        {kpis.map((k) => (
+          <div class="dad__kpi" style={`--d:${k.d};--k:10`}>
+            <p class="mono">{k.rotulo}</p>
+            <div class="dad__valor">
+              <div class="sk dad__sk" />
+              <b class="ap">{k.valor}</b>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="dad__grafico">
+        {barras.map((b) => (
+          <div
+            class:list={['dad__barra', b.destaque && 'dad__barra--destaque']}
+            style={`height:${b.h}%;--d:${b.d}`}
+          />
+        ))}
+        <svg viewBox="0 0 120 100" preserveAspectRatio="none" class="dad__linha">
+          <path
+            d="M5 72 L15 60 L25 66 L35 50 L45 54 L55 42 L65 46 L75 32 L85 36 L95 26 L105 28 L115 10"
+            pathLength="100"
+            fill="none"
+            stroke="#0F142C"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            vector-effect="non-scaling-stroke"
+            stroke-dasharray="100"
+          ></path>
+        </svg>
+        <div class="dad__ia mono">IA: dezembro deve ser o melhor mês</div>
+      </div>
+
+      <div class="dad__meses mono">
+        <span>jan</span>
+        <span>abr</span>
+        <span>jul</span>
+        <span>out</span>
+        <span>dez</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .dad {
+    display: flex;
+    flex-direction: column;
+    gap: 3cqw;
+    padding: 4cqw 5cqw;
+  }
+  .dad__topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dad__topo b {
+    font: 700 3.6cqw var(--fonte-titulo);
+    letter-spacing: -0.02em;
+  }
+  .dad__topo span {
+    padding: 0.8cqw 2cqw;
+    border: 1.5px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    font-size: 1.9cqw;
+    font-weight: 500;
+  }
+  .dad__kpis {
+    display: flex;
+    gap: 2.4cqw;
+  }
+  .dad__kpi {
+    flex: 1;
+    padding: 2cqw 2.4cqw;
+    border: 1.5px solid var(--cor-marinho);
+    border-radius: 2cqw;
+  }
+  .dad__kpi p {
+    font-size: 1.8cqw;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
+  }
+  .dad__valor {
+    position: relative;
+    height: 4.4cqw;
+    margin-top: 0.8cqw;
+  }
+  .dad__sk {
+    left: 0;
+    top: 20%;
+    width: 70%;
+    height: 60%;
+    opacity: calc(1 - clamp(0, (var(--p, 0) - var(--d)) * 10, 1));
+  }
+  .dad__valor b {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font: 700 3.6cqw/1.2 var(--fonte-titulo);
+    letter-spacing: -0.02em;
+  }
+  .dad__grafico {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 1.6cqw;
+    border-bottom: 1.5px solid var(--cor-marinho);
+  }
+  .dad__barra {
+    flex: 1;
+    background: #c9d6ee;
+    border-radius: 1cqw 1cqw 0 0;
+    transform-origin: bottom;
+    transform: scaleY(clamp(0, (var(--p, 0) - var(--d)) * 5, 1));
+  }
+  .dad__barra--destaque {
+    background: var(--cor-azul);
+  }
+  .dad__linha {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .dad__linha path {
+    stroke-dashoffset: calc((1 - clamp(0, (var(--p, 0) - 0.5) * 2.4, 1)) * 100);
+  }
+  .dad__ia {
+    --ap: clamp(0, (var(--p, 0) - 0.86) * 12, 1);
+    position: absolute;
+    right: 0;
+    top: -1cqw;
+    padding: 1.3cqw 2.2cqw;
+    border: 1.5px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    background: var(--cor-azul);
+    font-size: 1.9cqw;
+    font-weight: 500;
+    opacity: var(--ap);
+    transform: translateY(calc((1 - var(--ap)) * 10px));
+  }
+  .dad__meses {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -1.6cqw;
+    font-size: 1.7cqw;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
+  }
+</style>

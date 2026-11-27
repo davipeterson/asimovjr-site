@@ -1,0 +1,163 @@
+---
+/** Etapa 02: um app de pedidos se montando no celular. */
+import AsimovSymbol from '@/components/ui/AsimovSymbol.astro';
+
+const esboco = [
+  'left:8%;top:7%;width:40%;height:4%;--d:.18',
+  'left:8%;top:13%;width:62%;height:2.5%;--d:.21',
+  'left:8%;right:8%;top:21%;height:20%;border-radius:14px;--d:.25',
+  'left:8%;right:8%;top:46%;height:8%;--d:.29',
+  'left:8%;right:8%;top:57%;height:8%;--d:.32',
+  'left:8%;right:8%;top:68%;height:8%;--d:.35',
+  'left:0;right:0;bottom:0;height:9%;border-radius:0;--d:.38',
+];
+
+const linhas = [
+  { texto: 'Pedido #1042', cor: '#0F142C', top: '46%', d: 0.52 },
+  { texto: 'Pagamento aprovado', cor: '#007FFF', top: '57%', d: 0.58 },
+  { texto: 'Nota fiscal enviada', cor: '#C9D6EE', top: '68%', d: 0.64 },
+];
+---
+
+<div class="mock" style="--p: var(--p1); --s: var(--s1)">
+  <div class="celular">
+    <div class="celular__tela">
+      <div class="camada camada--esboco">
+        {esboco.map((s) => (
+          <div class="sk ap" style={s} />
+        ))}
+      </div>
+
+      <div class="camada camada--final">
+        <div class="app__topo">
+          <p class="app__ola">Olá!</p>
+          <p class="app__sub">Seu pedido está a caminho</p>
+        </div>
+        <div class="app__entrega">
+          <span class="mono">ENTREGA</span>
+          <b>Chega hoje até 18h</b>
+          <div class="app__barra">
+            <div></div>
+          </div>
+        </div>
+        {linhas.map((l) => (
+          <div class="app__linha ap ap-x" style={`top:${l.top};--d:${l.d};--k:9`}>
+            <span style={`background:${l.cor}`} />
+            {l.texto}
+          </div>
+        ))}
+        <div class="app__abas">
+          <span class="app__aba app__aba--ativa"></span>
+          <span class="app__aba"></span>
+          <span class="app__aba app__aba--redonda"></span>
+          <span class="app__aba"></span>
+        </div>
+      </div>
+
+      <div class="aviso app__aviso">
+        <AsimovSymbol size={16} />
+        Seu pedido saiu para entrega
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .app__topo {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 6%;
+  }
+  .app__ola {
+    font: 800 9cqw var(--fonte-titulo);
+    letter-spacing: -0.03em;
+  }
+  .app__sub {
+    font: 400 4.6cqw var(--fonte-texto);
+    color: var(--cor-texto-suave);
+  }
+  .app__entrega {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 21%;
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5cqw;
+    background: var(--cor-azul);
+    border-radius: 6cqw;
+  }
+  .app__entrega span {
+    font-size: 3.8cqw;
+    font-weight: 500;
+  }
+  .app__entrega b {
+    font: 700 6cqw var(--fonte-titulo);
+    letter-spacing: -0.02em;
+  }
+  .app__barra {
+    height: 2.4cqw;
+    border-radius: 9px;
+    background: rgb(15 20 44 / 0.22);
+  }
+  .app__barra div {
+    height: 100%;
+    width: calc(clamp(0, (var(--p, 0) - 0.5) * 2.4, 1) * 78%);
+    border-radius: 9px;
+    background: var(--cor-marinho);
+  }
+  .app__linha {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    height: 8%;
+    display: flex;
+    align-items: center;
+    gap: 4cqw;
+    border-bottom: 1px solid var(--cor-linha);
+    font: 600 4.4cqw var(--fonte-texto);
+  }
+  .app__linha span {
+    flex: none;
+    width: 9cqw;
+    height: 9cqw;
+    border-radius: 3cqw;
+  }
+  .app__abas {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 9%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid var(--cor-linha);
+  }
+  .app__aba {
+    width: 7cqw;
+    height: 7cqw;
+    border: 2px solid var(--cor-marinho);
+    border-radius: 2cqw;
+  }
+  .app__aba--ativa {
+    border: 0;
+    background: var(--cor-azul);
+  }
+  .app__aba--redonda {
+    border-radius: 50%;
+  }
+  .app__aviso {
+    left: 5%;
+    right: 5%;
+    top: 3%;
+    gap: 3cqw;
+    padding: 3.4cqw 4cqw;
+    border-radius: 5cqw;
+    font-size: 3.7cqw;
+    transform: translateY(calc((1 - var(--ap)) * -30px));
+  }
+</style>

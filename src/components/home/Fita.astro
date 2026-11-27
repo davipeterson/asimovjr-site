@@ -1,0 +1,79 @@
+---
+/**
+ * Fita diagonal com os destaques da Asimov rodando em loop.
+ * O texto é repetido para o loop não ter buracos: a animação anda exatamente
+ * metade da largura e recomeça, então as duas metades precisam ser iguais.
+ */
+import { destaques } from '@/data/destaques';
+
+const frase = destaques.fita.join(' ✦ ') + ' ✦';
+const COPIAS_POR_METADE = 3;
+---
+
+<div class="fita">
+  <p class="sr-only">{destaques.fita.join('. ')}.</p>
+  <div class="fita__listras" aria-hidden="true"></div>
+  <div class="fita__faixa" aria-hidden="true">
+    <div class="fita__trilho">
+      {Array.from({ length: COPIAS_POR_METADE * 2 }, () => (
+        <span>{frase}</span>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .fita {
+    --alt-listras: clamp(34px, 3.6vw, 52px);
+    --alt-faixa: clamp(40px, 4.2vw, 60px);
+    position: relative;
+    height: clamp(150px, 17vw, 250px);
+    overflow: hidden;
+    background: linear-gradient(var(--cor-branco) 50%, var(--cor-marinho) 50%);
+  }
+  .fita__listras,
+  .fita__faixa {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    top: 50%;
+    border-block: 2px solid var(--cor-marinho);
+  }
+  .fita__listras {
+    height: var(--alt-listras);
+    margin-top: calc(var(--alt-listras) / -2);
+    transform: rotate(4deg);
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--cor-azul) 0 26px,
+      var(--cor-branco) 26px 52px
+    );
+  }
+  .fita__faixa {
+    height: var(--alt-faixa);
+    margin-top: calc(var(--alt-faixa) / -2);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    transform: rotate(-4deg);
+    background: var(--cor-branco);
+  }
+  .fita__trilho {
+    display: flex;
+    width: max-content;
+    color: var(--cor-marinho);
+    font: 700 clamp(13px, 1.35vw, 19px) var(--fonte-titulo);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    animation: fita 60s linear infinite;
+  }
+  .fita__trilho span {
+    padding-right: 2em;
+    white-space: nowrap;
+  }
+  @keyframes fita {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

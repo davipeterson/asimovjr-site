@@ -1,0 +1,268 @@
+---
+/**
+ * Seção "pedido": uma conversa guiada pelo scroll. A cada etapa o visitante pergunta,
+ * a Asimov responde e o produto se monta na tela ao lado (site, app, sistema e dados).
+ *
+ * A seção tem 520vh de altura com o conteúdo grudado. O script escreve, para cada
+ * etapa k (0 a 3), duas variáveis no <section>:
+ *   --s{k}  presença da etapa (0 a 1)
+ *   --p{k}  progresso da montagem do mock (0 a 1)
+ * e --ped com o progresso total, usado na barra de baixo.
+ */
+import './mock.css';
+import Button from '@/components/ui/Button.astro';
+import MockSite from './MockSite.astro';
+import MockApp from './MockApp.astro';
+import MockSistema from './MockSistema.astro';
+import MockDados from './MockDados.astro';
+import { etapas } from '@/data/pedido';
+import { url } from '@/utils/url';
+---
+
+<section id="pedido" class="ped" data-pedido aria-labelledby="ped-titulo">
+  <div class="ped__sticky">
+    <h2 id="ped-titulo" class="sr-only">
+      O que a gente faz
+    </h2>
+
+    <div class="ped__wrap">
+      <div class="ped__chat">
+        {etapas.map((e, k) => (
+          <div class="ped__par" style={`--s:var(--s${k}, ${k === 0 ? 1 : 0});--p:var(--p${k}, 0)`}>
+            <span class="ped__quem ped__quem--voce mono">VOCÊ</span>
+            <p class="ped__voce">{e.pergunta}</p>
+            <div class="ped__resposta">
+              <span class="ped__quem ped__quem--nos mono">ASIMOV JR.</span>
+              <p class="ped__nos">{e.resposta}</p>
+              <p class="ped__tags mono">{e.tags}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="ped__palco" aria-hidden="true">
+        <MockSite />
+        <MockApp />
+        <MockSistema />
+        <MockDados />
+      </div>
+    </div>
+
+    <div class="ped__rodape">
+      <div class="ped__progresso">
+        <div class="ped__etapas mono" aria-hidden="true">
+          {etapas.map((e, k) => (
+            <span style={`--s:var(--s${k}, ${k === 0 ? 1 : 0})`}>
+              <i>{String(k + 1).padStart(2, '0')} </i>
+              {e.rotulo.toUpperCase()}
+            </span>
+          ))}
+        </div>
+        <div class="ped__barra">
+          <div></div>
+        </div>
+      </div>
+      <Button href={url('#contato')} variant="marinho" arrow={false} class="ped__cta">
+        Quero um desses
+      </Button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { clamp, onScrollFrame, setVar, smooth, stickyProgress } from '@/scripts/scroll';
+
+  const ped = document.querySelector<HTMLElement>('[data-pedido]');
+  const ETAPAS = 4;
+
+  if (ped) {
+    onScrollFrame(() => {
+      const total = stickyProgress(ped);
+      const f = total * ETAPAS;
+      const atual = Math.min(ETAPAS - 1, Math.floor(f));
+      const local = clamp(f - atual, 0, 1);
+      // A troca de etapa acontece nos últimos 20% de cada trecho.
+      const v = atual < ETAPAS - 1 ? atual + smooth(clamp((local - 0.8) / 0.2, 0, 1)) : atual;
+
+      for (let k = 0; k < ETAPAS; k++) {
+        const montagem = k < atual ? 1 : k > atual ? 0 : smooth(clamp(local / 0.74, 0, 1));
+        setVar(ped, `--p${k}`, montagem);
+        setVar(ped, `--s${k}`, clamp(1 - Math.abs(v - k), 0, 1), 3);
+      }
+      setVar(ped, '--ped', total);
+    });
+  }
+</script>
+
+<style>
+  .ped {
+    position: relative;
+    height: 520vh;
+    background: var(--cor-branco);
+    color: var(--cor-marinho);
+  }
+  .ped__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    background-color: var(--cor-branco);
+    background-image: radial-gradient(rgb(15 20 44 / 0.16) 1.1px, transparent 1.3px);
+    background-size: 22px 22px;
+  }
+  .ped__wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: stretch;
+    gap: 4vw;
+    padding: clamp(90px, 12vh, 112px) var(--margem) clamp(70px, 11vh, 96px);
+  }
+  .ped__chat {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .ped__palco {
+    position: relative;
+    flex: 1.2 1 0;
+    min-width: 0;
+  }
+
+  /* Conversa */
+  .ped__par {
+    --py: -50%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    opacity: var(--s);
+    transform: translateY(calc(var(--py) + (1 - var(--s)) * 26px));
+  }
+  .ped__quem {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: var(--raio-p);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .ped__quem--voce {
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .ped__quem--nos {
+    background: var(--cor-azul);
+    color: var(--cor-marinho);
+  }
+  .ped__voce,
+  .ped__nos {
+    font: 800 clamp(30px, 4.3vw, 68px) / 1.02 var(--fonte-titulo);
+    letter-spacing: -0.04em;
+  }
+  .ped__nos {
+    color: var(--cor-azul);
+  }
+  .ped__resposta {
+    margin-top: 14px;
+    opacity: clamp(0, (var(--p) - 0.12) * 8, 1);
+  }
+  .ped__tags {
+    margin-top: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cor-texto-suave);
+  }
+
+  /* Rodapé: etapas, barra de progresso e CTA */
+  .ped__rodape {
+    position: absolute;
+    left: var(--margem);
+    right: var(--margem);
+    bottom: clamp(18px, 3.5vh, 32px);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .ped__progresso {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ped__etapas {
+    display: flex;
+    gap: clamp(12px, 3vw, 36px);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+  .ped__etapas span {
+    white-space: nowrap;
+    opacity: calc(0.4 + var(--s) * 0.6);
+  }
+  .ped__etapas i {
+    font-style: normal;
+  }
+  .ped__barra {
+    height: 3px;
+    background: rgb(15 20 44 / 0.15);
+  }
+  .ped__barra div {
+    height: 100%;
+    background: var(--cor-marinho);
+    transform-origin: left;
+    transform: scaleX(var(--ped, 0));
+  }
+  .ped__rodape :global(.ped__cta) {
+    min-height: 48px;
+    padding: 0 20px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 860px) {
+    .ped__wrap {
+      flex-direction: column;
+      gap: 14px;
+      padding-top: 84px;
+      padding-bottom: 78px;
+    }
+    .ped__chat {
+      flex: 0 0 auto;
+      height: min(36%, 250px);
+    }
+    .ped__palco {
+      flex: 1 1 0;
+    }
+    .ped__par {
+      --py: 0px;
+      top: 0;
+    }
+    .ped__voce,
+    .ped__nos {
+      font-size: clamp(23px, 7vw, 34px);
+    }
+    .ped__quem {
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .ped__tags {
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .ped__etapas {
+      gap: 10px;
+      font-size: 11px;
+    }
+    .ped__etapas i {
+      display: none;
+    }
+    .ped__rodape :global(.ped__cta) {
+      min-height: 42px;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+  }
+</style>
