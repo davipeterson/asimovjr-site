@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/davipeterson/asimovjr-site/compare/v0.1.0...v0.2.0) (2026-11-27)
+
+
+### Novidades
+
+* base visual com tokens da marca, header e footer ([#18](https://github.com/davipeterson/asimovjr-site/issues/18)) ([824323d](https://github.com/davipeterson/asimovjr-site/commit/824323d2e189f6680fdeef8d7ea4602639fc01d5))
+
 ## 0.1.0 (2026-11-26)
 
 
