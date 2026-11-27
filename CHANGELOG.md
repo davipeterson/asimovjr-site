@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/davipeterson/asimovjr-site/compare/v0.3.0...v0.4.0) (2026-11-27)
+
+
+### Novidades
+
+* prêmio, projetos, clientes, sobre e contato na home ([#22](https://github.com/davipeterson/asimovjr-site/issues/22)) ([903f674](https://github.com/davipeterson/asimovjr-site/commit/903f674ac2b0c6ff22e8bfa3e5ecaf3d0c145bcf))
+
 ## [0.3.0](https://github.com/davipeterson/asimovjr-site/compare/v0.2.0...v0.3.0) (2026-11-27)
 
 
