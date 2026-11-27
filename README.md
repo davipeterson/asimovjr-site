@@ -124,6 +124,31 @@ nos componentes.
 3. Ajuste `altura` até a logo ficar com o mesmo peso visual das outras. Use
    `mostrarNome: true` só se a logo não tiver o nome escrito.
 
+### Publicar um post no blog
+
+1. Crie um arquivo em `src/content/blog/`. O nome vira o endereço:
+   `meu-post.md` → `/blog/meu-post`.
+2. Comece com este cabeçalho (o build avisa se faltar algo):
+   ```md
+   ---
+   titulo: 'Título do post'
+   subtitulo: 'Uma linha que complementa o título'
+   resumo: 'Até 200 caracteres. Aparece na lista do blog e no Google.'
+   data: 2026-12-01
+   autor: 'Asimov Jr'
+   capa: 'Frase curta da capa.'
+   rascunho: true
+   ---
+   ```
+3. Escreva em Markdown. Alguns elementos ganham o visual do site:
+   - o **primeiro parágrafo** fica em destaque;
+   - `## Título` vira um intertítulo;
+   - lista numerada (`1.`, `2.`…) vira cartões numerados;
+   - lista com tracinho (`- `) vira lista com checks azuis;
+   - citação (`> `) vira um bloco escuro em destaque.
+4. Com `rascunho: true` o post só aparece no `npm run dev`. Tire a linha (ou use `false`) para
+   publicar. O tempo de leitura é calculado sozinho.
+
 ### Trocar um projeto em destaque
 
 Em `src/data/projetos.ts`, cada projeto tem nome, tipo, descrição e mídia. Use

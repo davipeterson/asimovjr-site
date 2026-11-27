@@ -27,6 +27,8 @@ interface Props {
   footerBack?: { href: string; label: string };
   /** Cor de fundo da página (aparece no "puxar" do celular). */
   theme?: 'marinho' | 'branco';
+  /** "article" nos posts do blog. */
+  ogType?: 'website' | 'article';
 }
 
 const {
@@ -36,6 +38,7 @@ const {
   ctaHref,
   footerBack,
   theme = 'marinho',
+  ogType = 'website',
 } = Astro.props;
 
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.description}`;
@@ -72,13 +75,14 @@ const organizacao = {
     <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
     <link rel="sitemap" href={url('sitemap-index.xml')} />
     <meta name="theme-color" content="#0F142C" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <script type="application/ld+json" set:html={JSON.stringify(organizacao)} />
+    <slot name="head" />
   </head>
   <body id="topo">
     <Header ctaHref={ctaHref} />

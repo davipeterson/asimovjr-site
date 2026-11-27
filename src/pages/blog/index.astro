@@ -1,0 +1,205 @@
+---
+/** Lista do blog: o post mais recente em destaque, com capa azul. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import AsimovSymbol from '@/components/ui/AsimovSymbol.astro';
+import ArrowIcon from '@/components/ui/ArrowIcon.astro';
+import { dataCurta, postsPublicados, tempoDeLeitura } from '@/utils/blog';
+import { url } from '@/utils/url';
+
+const posts = await postsPublicados();
+---
+
+<BaseLayout
+  title="Blog"
+  description="Como a tecnologia pode impulsionar o seu projeto, contado por quem faz."
+  footerBack={{ href: url(), label: '← voltar pra home' }}
+>
+  <main class="blog">
+    <p class="mono blog__rotulo">// blog</p>
+    <h1 class="blog__titulo">
+      <span>Blog.</span>
+    </h1>
+    <p class="blog__intro">
+      Como a tecnologia pode impulsionar o seu projeto, contado por quem faz.
+    </p>
+
+    <ul class="blog__lista">
+      {posts.map((post, i) => (
+        <li>
+          <a class="post" href={url(`blog/${post.id}`)}>
+            <div class="post__texto">
+              <p class="mono post__meta">
+                <time datetime={post.data.data.toISOString().slice(0, 10)}>
+                  {dataCurta(post.data.data)}
+                </time>
+                <span>{tempoDeLeitura(post.body ?? '')} min de leitura</span>
+                <span>{post.data.autor}</span>
+              </p>
+              <h2 class="post__titulo">{post.data.titulo}</h2>
+              <p class="post__resumo">{post.data.resumo}</p>
+              <span class="mono post__ler">
+                ler o post{' '}
+                <span class="post__seta">
+                  <ArrowIcon direction="right" size={18} />
+                </span>
+              </span>
+            </div>
+            <div class="post__capa" aria-hidden="true">
+              <AsimovSymbol class="post__simbolo" color="var(--cor-marinho)" size="92%" />
+              <span class="mono post__num">post {String(posts.length - i).padStart(2, '0')}</span>
+              <span class="post__frase">{post.data.capa}</span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+    {posts.length < 3 && <p class="mono blog__breve">// mais posts em breve</p>}
+  </main>
+</BaseLayout>
+
+<style>
+  .blog {
+    padding: clamp(130px, 18vh, 180px) var(--margem) clamp(80px, 10vw, 140px);
+  }
+  .blog__rotulo {
+    font-size: 14px;
+    color: var(--cor-azul-claro);
+  }
+  .blog__titulo {
+    overflow: hidden;
+    margin: 10px 0 -0.18em;
+    padding-bottom: 0.26em;
+    font: 800 clamp(72px, 15vw, 240px) / 0.86 var(--fonte-titulo);
+    letter-spacing: -0.06em;
+  }
+  .blog__titulo span {
+    display: inline-block;
+    animation: sobe 1.1s var(--curva-saida) 0.1s both;
+  }
+  .blog__intro {
+    max-width: 520px;
+    margin-top: clamp(20px, 3vw, 34px);
+    font-size: clamp(17px, 1.5vw, 20px);
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.82);
+    animation: aparece 0.9s var(--curva-saida) 0.35s both;
+  }
+  .blog__lista {
+    margin: clamp(48px, 7vw, 96px) 0 0;
+    padding: 0;
+    list-style: none;
+    animation: aparece 0.9s var(--curva-saida) 0.45s both;
+  }
+  .blog__breve {
+    margin-top: 26px;
+    font-size: 13px;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  /* Card do post */
+  .post {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 28px 5vw;
+    padding: clamp(28px, 4vw, 48px) 0;
+    border-block: 1.5px solid rgb(255 255 255 / 0.18);
+    text-decoration: none;
+  }
+  .post__texto {
+    flex: 999 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    font-size: 13px;
+    color: var(--cor-azul-claro);
+  }
+  .post__titulo {
+    font: 800 clamp(32px, 4.6vw, 68px) / 1 var(--fonte-titulo);
+    letter-spacing: -0.045em;
+    transition: color 0.25s;
+  }
+  .post__resumo {
+    max-width: 560px;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.55;
+    color: rgb(255 255 255 / 0.78);
+  }
+  .post__ler {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .post__seta {
+    display: inline-flex;
+    color: var(--cor-azul);
+    transition: transform 0.3s var(--curva-saida);
+  }
+  .post__capa {
+    position: relative;
+    flex: 1 1 300px;
+    max-width: 460px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--cor-azul);
+    color: var(--cor-marinho);
+    border: 2px solid var(--cor-branco);
+    border-radius: var(--raio-g);
+    transition:
+      transform var(--duracao-media) var(--curva-saida),
+      box-shadow var(--duracao-media);
+  }
+  .post__capa :global(.post__simbolo) {
+    position: absolute;
+    right: -30%;
+    top: -30%;
+    transition: transform 1.2s var(--curva-saida);
+  }
+  .post__num {
+    position: absolute;
+    left: clamp(18px, 2vw, 28px);
+    top: clamp(16px, 2vw, 24px);
+    font-size: 13px;
+  }
+  .post__frase {
+    position: absolute;
+    left: clamp(18px, 2vw, 28px);
+    bottom: clamp(18px, 2vw, 28px);
+    max-width: 80%;
+    font: 800 clamp(30px, 3.4vw, 52px) / 0.95 var(--fonte-titulo);
+    letter-spacing: -0.04em;
+  }
+  .post:hover .post__titulo {
+    color: var(--cor-azul);
+  }
+  .post:hover .post__seta {
+    transform: translateX(8px);
+  }
+  .post:hover .post__capa {
+    transform: translate(-6px, -6px);
+    box-shadow: 16px 16px 0 var(--cor-branco);
+  }
+  .post:hover .post__capa :global(.post__simbolo) {
+    transform: rotate(120deg);
+  }
+
+  @keyframes sobe {
+    from {
+      transform: translateY(105%);
+    }
+  }
+  @keyframes aparece {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+</style>
