@@ -1,0 +1,76 @@
+---
+import AsimovSymbol from '@/components/ui/AsimovSymbol.astro';
+import LinkUnderline from '@/components/ui/LinkUnderline.astro';
+import { site, whatsappLink } from '@/data/site';
+
+interface Props {
+  /** Link de destaque à direita. Padrão: voltar ao topo da página. */
+  back?: { href: string; label: string } | undefined;
+}
+
+const { back = { href: '#topo', label: 'voltar ao topo ↑' } } = Astro.props;
+
+// O link do blog entra junto com o blog (milestone v0.5.0).
+const links = [
+  { label: 'instagram', href: site.social.instagram, external: true },
+  { label: 'linkedin', href: site.social.linkedin, external: true },
+  { label: 'whatsapp', href: whatsappLink(), external: true },
+];
+---
+
+<footer class="footer">
+  <div class="marca">
+    <AsimovSymbol size={30} />
+    <span>{site.name.replace('.', '')}</span>
+  </div>
+  <p class="mono endereco">{site.address}</p>
+  <nav aria-label="Links do rodapé">
+    <ul class="mono links">
+      {links.map((l) => (
+        <li>
+          <a href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}>
+            {l.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+  <LinkUnderline href={back.href}>{back.label}</LinkUnderline>
+</footer>
+
+<style>
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 28px;
+    padding: 26px var(--margem);
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font: 600 18px/1 var(--fonte-titulo);
+  }
+  .endereco {
+    font-size: 13px;
+    color: rgb(255 255 255 / 0.82);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+  .links a {
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--cor-azul-claro);
+  }
+</style>

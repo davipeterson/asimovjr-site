@@ -1,0 +1,83 @@
+---
+/**
+ * Botão-pílula da marca. É sempre um link (`<a>`): no site, toda ação leva a algum lugar.
+ * Para ações sem navegação (ex.: enviar formulário), use `as="button"`.
+ */
+import ArrowIcon from './ArrowIcon.astro';
+
+interface Props {
+  href?: string;
+  variant?: 'azul' | 'marinho';
+  as?: 'a' | 'button';
+  type?: 'button' | 'submit';
+  external?: boolean;
+  arrow?: boolean;
+  full?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'azul',
+  as = 'a',
+  type = 'button',
+  external = false,
+  arrow = true,
+  full = false,
+  class: className,
+} = Astro.props;
+
+const classes = ['btn', `btn--${variant}`, full && 'btn--full', className];
+const externalAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+{as === 'button' ? (
+  <button class:list={classes} type={type}>
+    <slot />
+    {arrow && <ArrowIcon size={16} />}
+  </button>
+) : (
+  <a class:list={classes} href={href} {...externalAttrs}>
+    <slot />
+    {arrow && <ArrowIcon size={16} />}
+  </a>
+)}
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 54px;
+    padding: 0 26px;
+    border: 0;
+    border-radius: var(--raio-pilula);
+    font: 700 17px/1 var(--fonte-texto);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform var(--duracao-rapida),
+      box-shadow var(--duracao-rapida);
+  }
+  .btn:hover {
+    transform: translate(-3px, -3px);
+  }
+  .btn--azul {
+    background: var(--cor-azul);
+    color: var(--cor-marinho);
+  }
+  .btn--azul:hover {
+    box-shadow: 3px 3px 0 var(--cor-branco);
+  }
+  .btn--marinho {
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .btn--marinho:hover {
+    box-shadow: 3px 3px 0 var(--cor-azul);
+  }
+  .btn--full {
+    width: 100%;
+  }
+</style>

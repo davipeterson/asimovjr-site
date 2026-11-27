@@ -1,13 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { site } from '@/data/site';
 ---
 
 <BaseLayout>
   <main class="placeholder">
-    <p class="tag">// em construção</p>
-    <h1>{site.name}</h1>
-    <p>O site novo está sendo montado aqui, uma seção por vez.</p>
+    <p class="mono tag">// em construção</p>
+    <h1>Asimov Jr.</h1>
+    <p>A home nova entra aqui, uma seção por vez.</p>
   </main>
 </BaseLayout>
 
@@ -18,20 +17,18 @@ import { site } from '@/data/site';
     flex-direction: column;
     justify-content: center;
     gap: 16px;
-    padding: 0 5vw;
+    padding: 0 var(--margem);
   }
   .tag {
-    margin: 0;
-    color: #6fb6ff;
-    font-family: ui-monospace, monospace;
+    font-size: 14px;
+    color: var(--cor-azul-claro);
   }
   h1 {
-    margin: 0;
-    font-size: clamp(56px, 12vw, 180px);
-    line-height: 0.9;
+    font: 200 clamp(64px, 16vw, 240px) / 0.85 var(--fonte-titulo);
     letter-spacing: -0.05em;
   }
-  p {
-    margin: 0;
+  p:last-child {
+    font-size: clamp(17px, 1.6vw, 22px);
+    color: rgb(255 255 255 / 0.82);
   }
 </style>

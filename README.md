@@ -89,6 +89,13 @@ O site abre em `http://localhost:4321/asimovjr-site/`.
 Algumas pastas aparecem conforme as fases do projeto avançam (veja os
 [milestones](https://github.com/davipeterson/asimovjr-site/milestones)).
 
+## Guia de estilo
+
+A página `/estilo` mostra as cores, fontes e componentes base do jeito que estão no código
+(prévia: https://davipeterson.github.io/asimovjr-site/estilo). Ela não aparece no Google nem no
+sitemap. Os tokens do manual de marca ficam em `src/styles/tokens.css`: use sempre as variáveis
+(`var(--cor-azul)`, `var(--fonte-titulo)`…) em vez de valores soltos.
+
 ## Como atualizar o conteúdo
 
 Telefone, e-mail, endereço e redes ficam em `src/data/site.ts`. Clientes do carrossel, projetos

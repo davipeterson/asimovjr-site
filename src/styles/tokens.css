@@ -1,0 +1,44 @@
+/*
+ * Tokens do manual de identidade da Asimov Jr.
+ * Use sempre as variáveis em vez de valores soltos.
+ */
+:root {
+  /* Cores da marca */
+  --cor-azul: #007fff;
+  --cor-marinho: #0f142c;
+  --cor-branco: #ffffff;
+
+  /* Apoio (derivadas da marca) */
+  --cor-azul-claro: #6fb6ff; /* textos azuis sobre o marinho */
+  --cor-cinza-claro: #f3f5fa; /* campos e fundos suaves */
+  --cor-linha: #e2e6ef; /* divisórias sobre branco */
+  --cor-texto-suave: #3d4259; /* texto secundário sobre branco */
+  --cor-whatsapp-balao: #dcf8c6;
+
+  /* Fontes */
+  --fonte-titulo: 'Poppins', system-ui, sans-serif;
+  --fonte-texto: 'DM Sans Variable', 'DM Sans', system-ui, sans-serif;
+  --fonte-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* Espaçamento lateral padrão das seções */
+  --margem: 5vw;
+
+  /* Raios */
+  --raio-p: 6px;
+  --raio-m: 14px;
+  --raio-g: 20px;
+  --raio-pilula: 999px;
+
+  /* Sombras "carimbo" (deslocadas, sem desfoque) */
+  --sombra-azul: 10px 10px 0 var(--cor-azul);
+  --sombra-marinho: 10px 10px 0 var(--cor-marinho);
+
+  /* Movimento */
+  --curva-saida: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duracao-rapida: 0.2s;
+  --duracao-media: 0.4s;
+
+  /* Camadas */
+  --z-header: 50;
+  --z-barra-leitura: 60;
+}

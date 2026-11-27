@@ -1,27 +1,76 @@
 ---
-import { site } from '@/data/site';
+/**
+ * Layout de todas as páginas: fontes, SEO, header e footer.
+ */
+import '@fontsource/poppins/latin-200.css';
+import '@fontsource/poppins/latin-600.css';
+import '@fontsource/poppins/latin-700.css';
+import '@fontsource/poppins/latin-800.css';
+import '@fontsource-variable/dm-sans';
+import '@fontsource/dm-mono/latin-400.css';
+import '@fontsource/dm-mono/latin-500.css';
 import '@/styles/global.css';
+
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { site } from '@/data/site';
+import { url } from '@/utils/url';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Páginas internas (ex.: guia de estilo) não aparecem no Google. */
+  noindex?: boolean;
+  /** Para onde vai o "Pedir orçamento" do header. */
+  ctaHref?: string;
+  /** Link de destaque do footer. */
+  footerBack?: { href: string; label: string };
+  /** Cor de fundo da página (aparece no "puxar" do celular). */
+  theme?: 'marinho' | 'branco';
 }
 
-const { title, description = site.description } = Astro.props;
+const {
+  title,
+  description = site.description,
+  noindex = false,
+  ctaHref,
+  footerBack,
+  theme = 'marinho',
+} = Astro.props;
+
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.description}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const favicon = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`;
+
+const organizacao = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  description: site.description,
+  url: new URL(url(), Astro.site).href,
+  email: site.email,
+  telephone: `+${site.whatsapp.number}`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Av. BPS, 1303',
+    addressLocality: 'Itajubá',
+    addressRegion: 'MG',
+    addressCountry: 'BR',
+  },
+  sameAs: [site.social.instagram, site.social.linkedin],
+};
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme={theme}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <link rel="sitemap" href={url('sitemap-index.xml')} />
     <meta name="theme-color" content="#0F142C" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
@@ -29,8 +78,18 @@ const favicon = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <script type="application/ld+json" set:html={JSON.stringify(organizacao)} />
   </head>
-  <body>
+  <body id="topo">
+    <Header ctaHref={ctaHref} />
     <slot />
+    <Footer back={footerBack} />
   </body>
 </html>
+
+<style is:global>
+  html[data-theme='branco'] body {
+    background: var(--cor-branco);
+    color: var(--cor-marinho);
+  }
+</style>

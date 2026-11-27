@@ -1,12 +1,4 @@
-/*
- * Estilos globais. Os tokens do manual de marca (cores, fontes, espaçamentos)
- * entram na fase "Base visual" (milestone v0.2.0).
- */
-:root {
-  --azul: #007fff;
-  --marinho: #0f142c;
-  --branco: #ffffff;
-}
+@import './tokens.css';
 
 *,
 *::before,
@@ -14,10 +6,81 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background: var(--marinho);
-  color: var(--branco);
-  font-family: system-ui, sans-serif;
+  background: var(--cor-marinho);
+  color: var(--cor-branco);
+  font-family: var(--fonte-texto);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--cor-azul);
+  outline-offset: 3px;
+}
+
+/* Utilitários */
+.mono {
+  font-family: var(--fonte-mono);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Quem pediu menos movimento no sistema vê tudo parado e completo */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

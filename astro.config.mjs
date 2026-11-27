@@ -18,7 +18,10 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'ignore',
-  integrations: [sitemap()],
+  integrations: [
+    // O guia de estilo é interno e fica fora do sitemap.
+    sitemap({ filter: (page) => !page.includes('/estilo') }),
+  ],
   build: {
     inlineStylesheets: 'auto',
   },

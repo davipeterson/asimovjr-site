@@ -1,0 +1,63 @@
+---
+/**
+ * Cabeçalho do site: dois "chips" flutuantes que ficam presos no topo enquanto a página rola.
+ * Não ocupa espaço no fluxo (altura 0), então as seções começam no topo da tela.
+ */
+import AsimovSymbol from '@/components/ui/AsimovSymbol.astro';
+import ArrowIcon from '@/components/ui/ArrowIcon.astro';
+import { url } from '@/utils/url';
+
+interface Props {
+  /** Para onde vai o "Pedir orçamento". Na home é a âncora do contato. */
+  ctaHref?: string | undefined;
+}
+
+const { ctaHref = url('#contato') } = Astro.props;
+---
+
+<header class="header">
+  <a class="chip chip--logo" href={url()} aria-label="Asimov Jr, página inicial">
+    <AsimovSymbol size={24} />
+    <span aria-hidden="true">Asimov Jr</span>
+  </a>
+  <a class="chip chip--cta" href={ctaHref}>
+    Pedir orçamento
+    <ArrowIcon />
+  </a>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    height: 0;
+    z-index: var(--z-header);
+  }
+  .chip {
+    position: absolute;
+    top: clamp(12px, 2.4vw, 26px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 0 16px;
+    border: 2px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    font: 700 15px/1 var(--fonte-texto);
+    text-decoration: none;
+    transition: transform var(--duracao-rapida);
+  }
+  .chip:hover {
+    transform: translateY(-2px);
+  }
+  .chip--logo {
+    left: clamp(12px, 2.4vw, 30px);
+    background: var(--cor-branco);
+    color: var(--cor-marinho);
+  }
+  .chip--cta {
+    right: clamp(12px, 2.4vw, 30px);
+    background: var(--cor-azul);
+    color: var(--cor-marinho);
+  }
+</style>
