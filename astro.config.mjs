@@ -23,6 +23,7 @@ export default defineConfig({
     sitemap({ filter: (page) => !page.includes('/estilo') }),
   ],
   build: {
-    inlineStylesheets: 'auto',
+    // O CSS do site é pequeno: vai embutido no HTML e não bloqueia o primeiro desenho.
+    inlineStylesheets: 'always',
   },
 });

@@ -98,9 +98,37 @@ sitemap. Os tokens do manual de marca ficam em `src/styles/tokens.css`: use semp
 
 ## Como atualizar o conteúdo
 
-Telefone, e-mail, endereço e redes ficam em `src/data/site.ts`. Clientes do carrossel, projetos
-em destaque e posts do blog vão ganhar o passo a passo aqui assim que as seções forem
-implementadas.
+Quase todo texto e imagem da home mora em `src/data/`. Mude lá e o site acompanha, sem mexer
+nos componentes.
+
+| O quê                                  | Onde                    |
+| -------------------------------------- | ----------------------- |
+| WhatsApp, e-mail, endereço e redes     | `src/data/site.ts`      |
+| Selo do prêmio, chamada da hero e fita | `src/data/destaques.ts` |
+| Conversa da seção "pedido"             | `src/data/pedido.ts`    |
+| Projetos em destaque                   | `src/data/projetos.ts`  |
+| Clientes do carrossel                  | `src/data/clientes.ts`  |
+| Terminal e depoimento                  | `src/data/sobre.ts`     |
+| Fotos (prêmio e time)                  | `src/assets/fotos/`     |
+
+### Adicionar um cliente no carrossel
+
+1. Coloque a logo em `src/assets/clientes/` (SVG, ou PNG com fundo transparente e boa
+   qualidade; o Astro otimiza o tamanho sozinho).
+2. Em `src/data/clientes.ts`, importe a logo e adicione um item na lista:
+   ```ts
+   import novo from '@/assets/clientes/novo.png';
+   // ...
+   { nome: 'Nome da Empresa', logo: novo, altura: 56 },
+   ```
+3. Ajuste `altura` até a logo ficar com o mesmo peso visual das outras. Use
+   `mostrarNome: true` só se a logo não tiver o nome escrito.
+
+### Trocar um projeto em destaque
+
+Em `src/data/projetos.ts`, cada projeto tem nome, tipo, descrição e mídia. Use
+`tipo: 'print'` com um print da tela (salve em `src/assets/projetos/`, de preferência 1440 px de
+largura) ou `tipo: 'logo'` quando ainda não houver print.
 
 ## Fluxo de trabalho no GitHub
 

@@ -1,0 +1,233 @@
+---
+/**
+ * Sobre: um terminal que "digita" quem é a Asimov conforme a seção entra na tela,
+ * a foto do time e um depoimento de cliente.
+ */
+import { Image } from 'astro:assets';
+import { depoimento, terminal } from '@/data/sobre';
+import time from '@/assets/fotos/time-enej-2026.jpg';
+
+const LINHAS = terminal.length + 1; // + a linha final com o cursor piscando
+---
+
+<section id="sobre" class="sobre" data-sobre style={`--linhas:${LINHAS}`}>
+  <div class="term">
+    <div class="term__barra">
+      <i class="term__ponto term__ponto--azul"></i>
+      <i class="term__ponto"></i>
+      <i class="term__ponto"></i>
+      <span class="mono">~/asimov-jr</span>
+    </div>
+    <div class="term__corpo">
+      <h2 class="sr-only">Sobre a Asimov Jr.</h2>
+      <ul class="sr-only">
+        {terminal
+          .filter((l) => l.tipo !== 'cmd')
+          .map((l) => (
+            <li>{l.texto}</li>
+          ))}
+      </ul>
+      <div aria-hidden="true">
+        {terminal.map((l, i) => (
+          <div
+            class={`term__linha term__linha--${l.tipo}`}
+            style={`--i:${i};--len:${l.texto.length + 1}`}
+          >
+            <span class="term__prefixo">{l.tipo === 'cmd' ? '$' : '>'}</span>
+            <span class="term__texto">{l.texto}</span>
+          </div>
+        ))}
+        <div class="term__linha term__linha--fim">
+          <span class="term__prefixo">$</span>
+          <span class="term__cursor"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sobre__lado">
+    <figure class="sobre__foto">
+      <Image
+        src={time}
+        alt="Equipe da Asimov Jr. reunida com a bandeira da empresa no ENEJ 2026"
+        widths={[480, 720, 960, 1280]}
+        sizes="(max-width: 760px) 90vw, 45vw"
+        loading="lazy"
+      />
+      <figcaption class="mono">time Asimov · ENEJ 2026</figcaption>
+    </figure>
+    <blockquote class="sobre__citacao">
+      <p>
+        <span aria-hidden="true">“</span>
+        {depoimento.texto}
+        <span aria-hidden="true">”</span>
+      </p>
+      <footer class="mono">{depoimento.autor}</footer>
+    </blockquote>
+  </div>
+</section>
+
+<script>
+  import { clamp, onScrollFrame, prefersReducedMotion, setVar } from '@/scripts/scroll';
+
+  const secao = document.querySelector<HTMLElement>('[data-sobre]');
+  if (secao) {
+    if (prefersReducedMotion()) {
+      setVar(secao, '--t', 1);
+    } else {
+      onScrollFrame(() => {
+        const vh = window.innerHeight || 800;
+        const r = secao.getBoundingClientRect();
+        setVar(secao, '--t', clamp((vh * 0.85 - r.top) / (vh * 0.95), 0, 1));
+      });
+    }
+  }
+</script>
+
+<style>
+  .sobre {
+    /* Fora da tela no carregamento: o navegador só monta a seção quando ela chega perto. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 40px 4vw;
+    padding: clamp(72px, 11vw, 150px) var(--margem);
+    background: var(--cor-branco);
+    color: var(--cor-marinho);
+  }
+
+  /* Terminal */
+  .term {
+    flex: 1 1 460px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+    border-radius: 16px;
+    box-shadow: var(--sombra-azul);
+  }
+  .term__barra {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 16px;
+    border-bottom: 1px solid rgb(255 255 255 / 0.18);
+  }
+  .term__barra span {
+    margin-left: 10px;
+    font-size: 12px;
+    color: rgb(255 255 255 / 0.75);
+  }
+  .term__ponto {
+    width: 11px;
+    height: 11px;
+    border: 1.5px solid rgb(255 255 255 / 0.6);
+    border-radius: 50%;
+  }
+  .term__ponto--azul {
+    border: 0;
+    background: var(--cor-azul);
+  }
+  .term__corpo {
+    flex: 1;
+    padding: clamp(18px, 2.6vw, 36px);
+  }
+  .term__linha {
+    /* Cada linha "digita" no seu trecho do progresso --t (0 a 1). */
+    --v: clamp(0, var(--t, 0) * var(--linhas) - var(--i), 1);
+    display: flex;
+    gap: 12px;
+    font: 400 clamp(13px, 1.35vw, 18px) / 1.9 var(--fonte-mono);
+    white-space: nowrap;
+  }
+  .term__prefixo {
+    color: rgb(255 255 255 / 0.5);
+    opacity: clamp(0, var(--t, 0) * var(--linhas) - var(--i) + 1, 1);
+  }
+  .term__linha--cmd .term__prefixo {
+    color: var(--cor-azul);
+  }
+  .term__texto {
+    display: inline-block;
+    max-width: calc(var(--v) * var(--len) * 1ch);
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+  .term__linha--destaque .term__texto {
+    color: var(--cor-azul-claro);
+  }
+  .term__linha--fim {
+    opacity: clamp(0, var(--t, 0) * var(--linhas) - (var(--linhas) - 0.4), 1);
+  }
+  .term__linha--fim .term__prefixo {
+    color: var(--cor-azul);
+    opacity: 1;
+  }
+  .term__cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    align-self: center;
+    background: var(--cor-azul);
+    animation: piscar 1s steps(1) infinite;
+  }
+  @keyframes piscar {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* Foto e depoimento */
+  .sobre__lado {
+    flex: 1 1 380px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sobre__foto {
+    position: relative;
+    flex: 1;
+    min-height: 300px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--cor-marinho);
+  }
+  .sobre__foto :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+  .sobre__foto figcaption {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    padding: 5px 10px;
+    border-radius: var(--raio-pilula);
+    background: var(--cor-branco);
+    font-size: 12px;
+  }
+  .sobre__citacao {
+    margin: 0;
+  }
+  .sobre__citacao p {
+    font: 700 clamp(22px, 2.4vw, 34px) / 1.2 var(--fonte-titulo);
+    letter-spacing: -0.025em;
+  }
+  .sobre__citacao p span {
+    color: var(--cor-azul);
+  }
+  .sobre__citacao footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--cor-texto-suave);
+  }
+</style>

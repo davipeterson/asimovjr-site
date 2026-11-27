@@ -1,0 +1,283 @@
+---
+/**
+ * "Já entregamos": os 4 projetos em destaque.
+ *
+ * Computador: a seção tem 330vh e os cards andam para o lado conforme a página rola.
+ * Celular: a seção tem altura normal e os cards ficam num carrossel de arrastar com encaixe.
+ */
+import { Image } from 'astro:assets';
+import { projetos } from '@/data/projetos';
+
+const total = String(projetos.length).padStart(2, '0');
+---
+
+<section id="projetos" class="proj" data-projetos aria-labelledby="proj-titulo">
+  <div class="proj__sticky">
+    <div class="proj__cabecalho">
+      <h2 id="proj-titulo">Já entregamos</h2>
+      <span class="mono proj__dica">
+        <span class="so-computador">// continue rolando ↓</span>
+        <span class="so-celular">// arraste pro lado →</span>
+      </span>
+    </div>
+
+    <ul class="proj__trilho" style={`--n:${projetos.length}`}>
+      {projetos.map((p, i) => (
+        <li class:list={['proj__card', i % 2 === 1 && 'proj__card--azul']}>
+          <article>
+            <div class="proj__topo">
+              <span class="mono proj__tipo">{p.tipo}</span>
+              <span class="mono">
+                {String(i + 1).padStart(2, '0')} / {total}
+              </span>
+            </div>
+            <div class:list={['proj__midia', `proj__midia--${p.midia.tipo}`]}>
+              <Image
+                src={p.midia.imagem}
+                alt={p.midia.alt}
+                widths={p.midia.tipo === 'print' ? [480, 720, 960, 1280] : [320, 480, 640]}
+                sizes={p.midia.tipo === 'print' ? '(max-width: 760px) 82vw, 64vw' : '400px'}
+                loading="lazy"
+              />
+              {p.midia.tipo === 'print' && <span class="mono proj__site">{p.midia.site}</span>}
+            </div>
+            <div>
+              <h3>{p.nome}</h3>
+              <p class="proj__desc">{p.descricao}</p>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+
+    <div class="proj__barra" aria-hidden="true">
+      <div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { clamp, onScrollFrame, setVar, stickyProgress } from '@/scripts/scroll';
+
+  const secao = document.querySelector<HTMLElement>('[data-projetos]');
+  if (secao) {
+    onScrollFrame(() => {
+      setVar(secao, '--proj', clamp((stickyProgress(secao) - 0.05) / 0.9, 0, 1));
+    });
+  }
+</script>
+
+<style>
+  .proj {
+    position: relative;
+    height: 330vh;
+    background: var(--cor-marinho);
+  }
+  .proj__sticky {
+    --cw: clamp(280px, 64vw, 900px);
+    --gap: 3vw;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--cor-branco);
+  }
+  .proj__cabecalho {
+    position: absolute;
+    left: var(--margem);
+    right: var(--margem);
+    top: clamp(84px, 12vh, 112px);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  h2 {
+    font: 800 clamp(34px, 5vw, 80px) / 1 var(--fonte-titulo);
+    letter-spacing: -0.045em;
+  }
+  .proj__dica {
+    font-size: 14px;
+    color: var(--cor-azul-claro);
+  }
+  .so-celular {
+    display: none;
+  }
+
+  .proj__trilho {
+    display: flex;
+    gap: var(--gap);
+    width: max-content;
+    margin: 12vh 0 0;
+    padding: 0 var(--margem);
+    list-style: none;
+    transform: translateX(
+      calc(
+        var(--proj, 0) *
+          (100vw - var(--n) * var(--cw) - (var(--n) - 1) * var(--gap) - 2 * var(--margem))
+      )
+    );
+  }
+  .proj__card {
+    flex: none;
+    width: var(--cw);
+    height: min(56vh, 540px);
+    background: var(--cor-branco);
+    color: var(--cor-marinho);
+    border-radius: 18px;
+  }
+  .proj__card--azul {
+    background: var(--cor-azul);
+  }
+  .proj__card article {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: clamp(16px, 2vw, 30px);
+  }
+  .proj__topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .proj__tipo {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 4px 12px;
+    border: 1.5px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    font-size: 13px;
+  }
+  .proj__midia {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .proj__midia :global(img) {
+    position: absolute;
+  }
+  .proj__midia--logo {
+    background: var(--cor-branco);
+  }
+  .proj__midia--logo :global(img) {
+    inset: 18%;
+    width: 64%;
+    height: 64%;
+    object-fit: contain;
+  }
+  .proj__midia--print {
+    background: var(--cor-marinho);
+  }
+  .proj__midia--print :global(img) {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 0%;
+  }
+  .proj__site {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    padding: 6px 12px;
+    border: 1.5px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    background: var(--cor-azul);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  h3 {
+    font: 800 clamp(36px, 6vw, 104px) / 0.95 var(--fonte-titulo);
+    letter-spacing: -0.05em;
+  }
+  .proj__desc {
+    max-width: 600px;
+    margin-top: 10px;
+    font-size: clamp(15px, 1.3vw, 19px);
+    line-height: 1.5;
+  }
+  .proj__barra {
+    position: absolute;
+    left: var(--margem);
+    right: var(--margem);
+    bottom: 4vh;
+    height: 3px;
+    background: rgb(255 255 255 / 0.22);
+  }
+  .proj__barra div {
+    height: 100%;
+    background: var(--cor-azul);
+    transform-origin: left;
+    transform: scaleX(var(--proj, 0));
+  }
+
+  /* Celular: carrossel de arrastar */
+  @media (max-width: 760px) {
+    .so-computador {
+      display: none;
+    }
+    .so-celular {
+      display: inline;
+    }
+    .proj {
+      height: auto;
+    }
+    .proj__sticky {
+      --cw: 82vw;
+      --gap: 14px;
+      position: relative;
+      height: auto;
+      overflow: visible;
+      padding: clamp(84px, 12vh, 112px) 0 56px;
+    }
+    .proj__cabecalho {
+      position: static;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+      padding: 0 var(--margem);
+    }
+    .proj__trilho {
+      width: auto;
+      margin-top: 0;
+      padding-bottom: 6px;
+      overflow-x: auto;
+      transform: none;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 0 var(--margem);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .proj__trilho::-webkit-scrollbar {
+      display: none;
+    }
+    .proj__trilho::after {
+      content: '';
+      flex: none;
+      width: 1px;
+    }
+    .proj__card {
+      scroll-snap-align: start;
+    }
+    .proj__topo {
+      font-size: 12px;
+    }
+    .proj__tipo {
+      padding: 3px 10px;
+      font-size: 11px;
+    }
+    .proj__barra {
+      display: none;
+    }
+  }
+</style>

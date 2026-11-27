@@ -1,0 +1,84 @@
+---
+/** Prêmio: foto do troféu e o texto do Melhor Case Mundial de Impacto (ENEJ 2026 + JEWC). */
+import { Image } from 'astro:assets';
+import LinkUnderline from '@/components/ui/LinkUnderline.astro';
+import premio from '@/assets/fotos/premio-enej-2026.jpg';
+---
+
+<section id="premio" class="premio" aria-labelledby="premio-titulo">
+  <figure class="premio__foto">
+    <Image
+      src={premio}
+      alt="Troféu do ENEJ 2026 erguido na frente do prédio da UNIFEI"
+      widths={[360, 540, 720, 920]}
+      sizes="(max-width: 760px) 90vw, 460px"
+      loading="lazy"
+    />
+  </figure>
+  <div class="premio__texto">
+    <p class="mono premio__rotulo">// ENEJ 2026 + JEWC · Belo Horizonte</p>
+    <h2 id="premio-titulo">Campeã do Melhor Case Mundial de Impacto.</h2>
+    <p class="premio__desc">
+      Em 2026, o ENEJ aconteceu junto com o JEWC, a conferência mundial de empresas juniores, com
+      participantes de mais de 40 países. Lá, o ArborizAI, app que a gente desenvolveu, foi eleito o
+      Melhor Case Mundial de Impacto.
+    </p>
+    <LinkUnderline href="#projetos" class="premio__link">
+      ver o projeto →
+    </LinkUnderline>
+  </div>
+</section>
+
+<style>
+  .premio {
+    /* Fora da tela no carregamento: o navegador só monta a seção quando ela chega perto. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 36px 5vw;
+    padding: clamp(56px, 8vw, 110px) var(--margem) clamp(24px, 4vw, 40px);
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .premio__foto {
+    position: relative;
+    flex: 1 1 300px;
+    max-width: 460px;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: var(--sombra-azul);
+  }
+  .premio__foto :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 40% 60%;
+  }
+  .premio__texto {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+  }
+  .premio__rotulo {
+    font-size: 14px;
+    color: var(--cor-azul-claro);
+  }
+  h2 {
+    font: 800 clamp(40px, 6.4vw, 108px) / 0.95 var(--fonte-titulo);
+    letter-spacing: -0.05em;
+  }
+  .premio__desc {
+    max-width: 560px;
+    font-size: clamp(17px, 1.5vw, 21px);
+    line-height: 1.55;
+    color: rgb(255 255 255 / 0.86);
+  }
+</style>

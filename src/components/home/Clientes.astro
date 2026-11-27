@@ -1,0 +1,92 @@
+---
+/**
+ * Carrossel automático das empresas que já confiaram na Asimov.
+ * Roda sozinho (não depende do scroll) e pausa quando o mouse passa por cima.
+ * A lista aparece duas vezes para o loop ser contínuo; a segunda cópia é escondida
+ * dos leitores de tela.
+ */
+import { Image } from 'astro:assets';
+import { clientes } from '@/data/clientes';
+---
+
+<section id="clientes" class="cli" aria-labelledby="cli-titulo">
+  <h2 id="cli-titulo">Quem já confiou na gente</h2>
+  <div class="cli__faixa">
+    <div class="cli__trilho">
+      {[0, 1].map((copia) => (
+        <ul class="cli__lista" aria-hidden={copia === 1 ? 'true' : undefined}>
+          {clientes.map((c) => (
+            <li class="cli__item">
+              <Image
+                src={c.logo}
+                alt={c.mostrarNome ? '' : c.nome}
+                height={c.altura * 2}
+                style={`--h:${c.altura}px`}
+                loading="lazy"
+              />
+              {c.mostrarNome && <span class="cli__nome">{c.nome}</span>}
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cli {
+    /* Fora da tela no carregamento: o navegador só monta a seção quando ela chega perto. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 420px;
+    padding-top: clamp(64px, 9vw, 120px);
+    background: var(--cor-branco);
+    color: var(--cor-marinho);
+  }
+  h2 {
+    padding: 0 var(--margem);
+    font: 800 clamp(32px, 4.4vw, 68px) / 1 var(--fonte-titulo);
+    letter-spacing: -0.045em;
+  }
+  .cli__faixa {
+    margin-top: clamp(28px, 4vw, 48px);
+    padding: clamp(18px, 2.4vw, 30px) 0;
+    overflow: hidden;
+    border-block: 2px solid var(--cor-marinho);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .cli__trilho {
+    display: flex;
+    width: max-content;
+    animation: carrossel 45s linear infinite;
+  }
+  .cli__faixa:hover .cli__trilho {
+    animation-play-state: paused;
+  }
+  .cli__lista {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cli__item {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-right: clamp(40px, 5vw, 72px);
+  }
+  .cli__item :global(img) {
+    width: auto;
+    height: clamp(44px, 4.6vw, var(--h));
+  }
+  .cli__nome {
+    max-width: 130px;
+    font: 700 clamp(13px, 1.05vw, 16px) / 1.1 var(--fonte-titulo);
+    letter-spacing: -0.02em;
+  }
+  @keyframes carrossel {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

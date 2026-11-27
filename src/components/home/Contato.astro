@@ -1,0 +1,260 @@
+---
+/**
+ * Contato: a pessoa escolhe o tipo de projeto, descreve em uma frase e vê a mensagem pronta.
+ * O botão abre o WhatsApp com essa mensagem. Sem JavaScript, o botão abre a conversa vazia.
+ */
+import ArrowIcon from '@/components/ui/ArrowIcon.astro';
+import { site, whatsappLink } from '@/data/site';
+
+const tipos = ['Site', 'App', 'Sistema', 'Dados & IA', 'Ainda não sei'];
+const saudacao = 'Olá, Asimov Jr.!';
+---
+
+<section id="contato" class="contato" aria-labelledby="contato-titulo">
+  <div class="contato__texto">
+    <p class="mono">// sua vez</p>
+    <h2 id="contato-titulo">Bora tirar sua ideia do papel?</h2>
+    <div class="mono contato__canais">
+      <a href={whatsappLink()} target="_blank" rel="noopener">
+        whatsapp · {site.whatsapp.display}
+      </a>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+
+  <form class="form" data-contato data-saudacao={saudacao} data-numero={site.whatsapp.number}>
+    <fieldset>
+      <legend>1. O que você precisa?</legend>
+      <div class="form__pilulas">
+        {tipos.map((t) => (
+          <button type="button" class="form__pilula" aria-pressed="false" data-tipo={t}>
+            {t}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+
+    <div class="form__campo">
+      <label for="contato-ideia">2. Conta um pouco do projeto</label>
+      <textarea
+        id="contato-ideia"
+        rows="3"
+        placeholder="Ex.: quero um app para meus clientes acompanharem os pedidos"
+        data-ideia
+      ></textarea>
+    </div>
+
+    <div class="form__campo form__campo--previa">
+      <span class="mono form__rotulo" id="contato-previa-rotulo">
+        prévia da mensagem
+      </span>
+      <p
+        class="form__previa"
+        aria-labelledby="contato-previa-rotulo"
+        aria-live="polite"
+        data-previa
+      >
+        {saudacao}
+      </p>
+    </div>
+
+    <a
+      class="form__enviar"
+      href={whatsappLink(saudacao)}
+      target="_blank"
+      rel="noopener"
+      data-enviar
+    >
+      Enviar pelo WhatsApp
+      <ArrowIcon size={16} />
+    </a>
+  </form>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contato]');
+
+  if (form) {
+    const saudacao = form.dataset['saudacao'] ?? '';
+    const numero = form.dataset['numero'] ?? '';
+    const ideia = form.querySelector<HTMLTextAreaElement>('[data-ideia]');
+    const previa = form.querySelector<HTMLElement>('[data-previa]');
+    const enviar = form.querySelector<HTMLAnchorElement>('[data-enviar]');
+    const pilulas = [...form.querySelectorAll<HTMLButtonElement>('[data-tipo]')];
+    let tipo = '';
+
+    const montar = (): string => {
+      let msg = saudacao;
+      const texto = (ideia?.value ?? '').trim();
+      if (texto) {
+        const frase = texto.charAt(0).toUpperCase() + texto.slice(1);
+        msg += ' ' + frase + (/[.!?]$/.test(frase) ? '' : '.');
+      }
+      if (tipo) msg += ` (Tipo de projeto: ${tipo})`;
+      return msg;
+    };
+
+    const atualizar = (): void => {
+      const msg = montar();
+      if (previa) previa.textContent = msg;
+      if (enviar) enviar.href = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+    };
+
+    for (const pilula of pilulas) {
+      pilula.addEventListener('click', () => {
+        const valor = pilula.dataset['tipo'] ?? '';
+        tipo = tipo === valor ? '' : valor;
+        for (const p of pilulas) p.setAttribute('aria-pressed', String(p.dataset['tipo'] === tipo));
+        atualizar();
+      });
+    }
+    ideia?.addEventListener('input', atualizar);
+    form.addEventListener('submit', (e) => e.preventDefault());
+  }
+</script>
+
+<style>
+  .contato {
+    /* Fora da tela no carregamento: o navegador só monta a seção quando ela chega perto. */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 40px 5vw;
+    padding: clamp(72px, 10vw, 140px) var(--margem) clamp(56px, 7vw, 100px);
+    background: var(--cor-azul);
+    color: var(--cor-marinho);
+  }
+  .contato__texto {
+    flex: 1 1 380px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .contato__texto > p {
+    font-size: 14px;
+  }
+  h2 {
+    font: 800 clamp(44px, 7vw, 112px) / 0.94 var(--fonte-titulo);
+    letter-spacing: -0.05em;
+  }
+  .contato__canais {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .contato__canais a {
+    align-self: flex-start;
+    text-decoration: none;
+  }
+  .contato__canais a:hover {
+    text-decoration: underline;
+  }
+
+  /* Cartão do formulário */
+  .form {
+    flex: 1 1 440px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: clamp(20px, 2.6vw, 36px);
+    background: var(--cor-branco);
+    border: 2px solid var(--cor-marinho);
+    border-radius: var(--raio-g);
+    box-shadow: var(--sombra-marinho);
+  }
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  legend,
+  label {
+    font: 700 18px var(--fonte-texto);
+  }
+  legend {
+    margin-bottom: 12px;
+    padding: 0;
+  }
+  .form__pilulas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .form__pilula {
+    min-height: 46px;
+    padding: 0 18px;
+    border: 2px solid var(--cor-marinho);
+    border-radius: var(--raio-pilula);
+    background: transparent;
+    color: var(--cor-marinho);
+    font: 700 15px var(--fonte-texto);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .form__pilula:hover {
+    transform: translateY(-2px);
+  }
+  .form__pilula[aria-pressed='true'] {
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .form__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .form__campo--previa {
+    gap: 8px;
+  }
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    resize: vertical;
+    background: var(--cor-cinza-claro);
+    border: 2px solid var(--cor-marinho);
+    border-radius: 12px;
+    font: 400 16px/1.45 var(--fonte-texto);
+  }
+  textarea::placeholder {
+    color: #5a5f75;
+  }
+  .form__rotulo {
+    font-size: 12px;
+    color: var(--cor-texto-suave);
+  }
+  .form__previa {
+    align-self: flex-start;
+    max-width: 100%;
+    padding: 12px 14px;
+    overflow-wrap: anywhere;
+    background: var(--cor-whatsapp-balao);
+    border-radius: 14px 14px 14px 4px;
+    font: 400 15px/1.45 var(--fonte-texto);
+  }
+  .form__enviar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 54px;
+    padding: 0 26px;
+    border-radius: var(--raio-pilula);
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+    font: 700 17px/1 var(--fonte-texto);
+    text-decoration: none;
+    transition:
+      transform var(--duracao-rapida),
+      box-shadow var(--duracao-rapida);
+  }
+  .form__enviar:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 3px 3px 0 var(--cor-azul);
+  }
+</style>
