@@ -1,6 +1,6 @@
 ## O que muda
 
-<!-- Uma ou duas frases. Se fecha uma issue, escreva "Fecha #N". -->
+<!-- Uma ou duas frases. Se fecha uma issue, escreva "Closes #N" (o GitHub só reconhece em inglês). -->
 
 ## Como testar
 

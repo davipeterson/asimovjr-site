@@ -1,34 +1,38 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/home/Hero.astro';
+import Pedido from '@/components/home/pedido/Pedido.astro';
+import Fita from '@/components/home/Fita.astro';
 ---
 
 <BaseLayout>
-  <main class="placeholder">
-    <p class="mono tag">// em construção</p>
-    <h1>Asimov Jr.</h1>
-    <p>A home nova entra aqui, uma seção por vez.</p>
+  <main>
+    <Hero />
+    <Pedido />
+    <Fita />
+    <!-- Prêmio, projetos, clientes, sobre e contato entram no milestone v0.4.0. -->
+    <section id="contato" class="em-breve" aria-labelledby="em-breve-titulo">
+      <p class="mono">// em construção</p>
+      <h2 id="em-breve-titulo">
+        Prêmio, projetos, clientes, sobre e contato chegam na próxima fase.
+      </h2>
+    </section>
   </main>
 </BaseLayout>
 
 <style>
-  .placeholder {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 16px;
-    padding: 0 var(--margem);
+  .em-breve {
+    padding: clamp(80px, 12vw, 160px) var(--margem);
+    background: var(--cor-marinho);
   }
-  .tag {
+  .em-breve p {
     font-size: 14px;
     color: var(--cor-azul-claro);
   }
-  h1 {
-    font: 200 clamp(64px, 16vw, 240px) / 0.85 var(--fonte-titulo);
-    letter-spacing: -0.05em;
-  }
-  p:last-child {
-    font-size: clamp(17px, 1.6vw, 22px);
-    color: rgb(255 255 255 / 0.82);
+  .em-breve h2 {
+    max-width: 900px;
+    margin-top: 12px;
+    font: 800 clamp(28px, 4vw, 56px) / 1.05 var(--fonte-titulo);
+    letter-spacing: -0.04em;
   }
 </style>

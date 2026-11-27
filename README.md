@@ -108,7 +108,7 @@ implementadas.
    num milestone (uma fase do projeto).
 2. **Crie uma branch a partir da `main`** com o tipo na frente:
    `feat/hero-particulas`, `fix/contato-celular`, `content/cliente-uairrior`.
-3. **Abra um PR** e preencha o modelo. Escreva "Fecha #N" para a issue fechar sozinha no merge.
+3. **Abra um PR** e preencha o modelo. Escreva "Closes #N" (em inglês, é a palavra que o GitHub reconhece) para a issue fechar sozinha no merge.
 4. **O CI precisa passar** (formatação, lint, tipos, build e Lighthouse no celular com nota
    mínima de 90 em desempenho e acessibilidade).
 5. **Merge com "Squash and merge".** O título do PR vira o commit na `main`, por isso ele segue o
