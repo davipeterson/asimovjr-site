@@ -52,16 +52,30 @@ import { destaques } from '@/data/destaques';
 
   if (hero && canvas) {
     let logo: LogoParticulas | null = null;
-    try {
-      logo = new LogoParticulas(canvas, { parado: prefersReducedMotion() });
-    } catch {
-      // Sem canvas 2D: a hero continua funcionando, só sem o logo animado.
-    }
+    let explode = 0;
+
+    // As partículas começam depois que a página terminou de carregar, para não disputar
+    // o processador com o primeiro desenho. O logo se monta na frente da pessoa do mesmo jeito.
+    const iniciar = (): void => {
+      try {
+        logo = new LogoParticulas(canvas, { parado: prefersReducedMotion() });
+        logo.setExplode(explode);
+      } catch {
+        // Sem canvas 2D: a hero continua funcionando, só sem o logo animado.
+      }
+    };
+    const depoisDoLoad = (): void => {
+      if ('requestIdleCallback' in window) requestIdleCallback(iniciar, { timeout: 600 });
+      else setTimeout(iniciar, 200);
+    };
+    if (document.readyState === 'complete') depoisDoLoad();
+    else window.addEventListener('load', depoisDoLoad, { once: true });
 
     onScrollFrame(() => {
       const p = stickyProgress(hero);
       setVar(hero, '--hero', p);
-      logo?.setExplode(smooth(clamp((p - 0.04) / 0.8, 0, 1)));
+      explode = smooth(clamp((p - 0.04) / 0.8, 0, 1));
+      logo?.setExplode(explode);
     });
   }
 </script>

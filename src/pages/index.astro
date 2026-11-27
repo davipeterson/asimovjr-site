@@ -3,6 +3,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/home/Hero.astro';
 import Pedido from '@/components/home/pedido/Pedido.astro';
 import Fita from '@/components/home/Fita.astro';
+import Premio from '@/components/home/Premio.astro';
+import Projetos from '@/components/home/Projetos.astro';
+import Clientes from '@/components/home/Clientes.astro';
+import Sobre from '@/components/home/Sobre.astro';
+import Contato from '@/components/home/Contato.astro';
 ---
 
 <BaseLayout>
@@ -10,29 +15,10 @@ import Fita from '@/components/home/Fita.astro';
     <Hero />
     <Pedido />
     <Fita />
-    <!-- Prêmio, projetos, clientes, sobre e contato entram no milestone v0.4.0. -->
-    <section id="contato" class="em-breve" aria-labelledby="em-breve-titulo">
-      <p class="mono">// em construção</p>
-      <h2 id="em-breve-titulo">
-        Prêmio, projetos, clientes, sobre e contato chegam na próxima fase.
-      </h2>
-    </section>
+    <Premio />
+    <Projetos />
+    <Clientes />
+    <Sobre />
+    <Contato />
   </main>
 </BaseLayout>
-
-<style>
-  .em-breve {
-    padding: clamp(80px, 12vw, 160px) var(--margem);
-    background: var(--cor-marinho);
-  }
-  .em-breve p {
-    font-size: 14px;
-    color: var(--cor-azul-claro);
-  }
-  .em-breve h2 {
-    max-width: 900px;
-    margin-top: 12px;
-    font: 800 clamp(28px, 4vw, 56px) / 1.05 var(--fonte-titulo);
-    letter-spacing: -0.04em;
-  }
-</style>
