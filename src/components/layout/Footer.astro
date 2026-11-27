@@ -2,6 +2,7 @@
 import AsimovSymbol from '@/components/ui/AsimovSymbol.astro';
 import LinkUnderline from '@/components/ui/LinkUnderline.astro';
 import { site, whatsappLink } from '@/data/site';
+import { url } from '@/utils/url';
 
 interface Props {
   /** Link de destaque à direita. Padrão: voltar ao topo da página. */
@@ -10,8 +11,8 @@ interface Props {
 
 const { back = { href: '#topo', label: 'voltar ao topo ↑' } } = Astro.props;
 
-// O link do blog entra junto com o blog (milestone v0.5.0).
 const links = [
+  { label: 'blog', href: url('blog'), external: false },
   { label: 'instagram', href: site.social.instagram, external: true },
   { label: 'linkedin', href: site.social.linkedin, external: true },
   { label: 'whatsapp', href: whatsappLink(), external: true },

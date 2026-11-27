@@ -1,0 +1,251 @@
+---
+/**
+ * Página de um post. O texto vem do Markdown e ganha o visual do site:
+ *  - primeiro parágrafo em destaque
+ *  - lista numerada (1. 2. 3.) vira cartões numerados
+ *  - lista com tracinho (- ) vira lista com checks
+ *  - citação (> ) vira um bloco escuro em destaque
+ */
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import LinkUnderline from '@/components/ui/LinkUnderline.astro';
+import CtaPost from '@/components/blog/CtaPost.astro';
+import { site } from '@/data/site';
+import { dataCurta, postsPublicados, tempoDeLeitura, type Post } from '@/utils/blog';
+import { url } from '@/utils/url';
+
+export const getStaticPaths = (async () => {
+  const posts = await postsPublicados();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const dataIso = post.data.data.toISOString().slice(0, 10);
+
+const artigo = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.titulo,
+  description: post.data.resumo,
+  datePublished: dataIso,
+  author: { '@type': 'Organization', name: site.name },
+  publisher: { '@type': 'Organization', name: site.name },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+
+<BaseLayout
+  title={post.data.titulo}
+  description={post.data.resumo}
+  ogType="article"
+  theme="branco"
+  footerBack={{ href: url('blog'), label: '← voltar pro blog' }}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(artigo)} />
+  <div class="leitura" aria-hidden="true">
+    <div data-leitura></div>
+  </div>
+
+  <main>
+    <header class="topo">
+      <div class="coluna">
+        <LinkUnderline href={url('blog')} class="topo__voltar">
+          ← blog
+        </LinkUnderline>
+        <p class="mono topo__meta">
+          <time datetime={dataIso}>{dataCurta(post.data.data)}</time>
+          <span>{tempoDeLeitura(post.body ?? '')} min de leitura</span>
+          <span>{post.data.autor}</span>
+        </p>
+        <h1>{post.data.titulo}</h1>
+        <p class="topo__sub">{post.data.subtitulo}</p>
+      </div>
+    </header>
+
+    <article class="texto" data-artigo>
+      <div class="coluna prosa">
+        <Content />
+      </div>
+    </article>
+
+    <CtaPost />
+  </main>
+</BaseLayout>
+
+<script>
+  import { clamp, onScrollFrame } from '@/scripts/scroll';
+
+  const barra = document.querySelector<HTMLElement>('[data-leitura]');
+  const artigo = document.querySelector<HTMLElement>('[data-artigo]');
+
+  if (barra && artigo) {
+    onScrollFrame(() => {
+      const vh = window.innerHeight || 800;
+      const r = artigo.getBoundingClientRect();
+      const p = clamp((vh * 0.35 - r.top) / Math.max(1, r.height - vh * 0.5), 0, 1);
+      barra.style.transform = `scaleX(${p.toFixed(4)})`;
+    });
+  }
+</script>
+
+<style>
+  .leitura {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: var(--z-barra-leitura);
+    height: 4px;
+    background: rgb(0 127 255 / 0.15);
+  }
+  .leitura div {
+    height: 100%;
+    background: var(--cor-azul);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .coluna {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* Cabeçalho escuro */
+  .topo {
+    padding: clamp(130px, 18vh, 180px) var(--margem) clamp(56px, 7vw, 96px);
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+  }
+  .topo .coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .topo :global(.topo__voltar) {
+    align-self: flex-start;
+  }
+  .topo__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    font-size: 13px;
+    color: var(--cor-azul-claro);
+  }
+  h1 {
+    font: 800 clamp(40px, 5vw, 76px) / 0.98 var(--fonte-titulo);
+    letter-spacing: -0.05em;
+  }
+  .topo__sub {
+    font: 500 clamp(18px, 1.7vw, 24px) / 1.4 var(--fonte-texto);
+    color: rgb(255 255 255 / 0.82);
+  }
+
+  /* Corpo do texto */
+  .texto {
+    padding: clamp(48px, 7vw, 96px) var(--margem) clamp(56px, 7vw, 100px);
+    background: var(--cor-branco);
+    color: #22273f;
+  }
+  .prosa {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    font-size: clamp(17px, 1.35vw, 19px);
+    line-height: 1.7;
+  }
+  .prosa :global(> p:first-child) {
+    font: 700 clamp(22px, 2.2vw, 30px) / 1.3 var(--fonte-titulo);
+    letter-spacing: -0.03em;
+    color: var(--cor-marinho);
+  }
+  .prosa :global(h2) {
+    margin-top: clamp(26px, 3vw, 40px);
+    font: 800 clamp(26px, 2.6vw, 36px) / 1.1 var(--fonte-titulo);
+    letter-spacing: -0.035em;
+    color: var(--cor-marinho);
+  }
+  .prosa :global(strong) {
+    color: var(--cor-marinho);
+  }
+  .prosa :global(a) {
+    color: var(--cor-marinho);
+    text-decoration-color: var(--cor-azul);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  /* Lista numerada → cartões */
+  .prosa :global(ol) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 14px;
+    margin: 6px 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: cartao;
+  }
+  .prosa :global(ol li) {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--cor-branco);
+    border: 2px solid var(--cor-marinho);
+    border-radius: var(--raio-m);
+    box-shadow: 5px 5px 0 var(--cor-azul);
+    color: var(--cor-marinho);
+    font: 700 clamp(16px, 1.3vw, 18px) / 1.3 var(--fonte-titulo);
+    counter-increment: cartao;
+  }
+  .prosa :global(ol li::before) {
+    content: counter(cartao, decimal-leading-zero);
+    font: 500 13px var(--fonte-mono);
+    color: var(--cor-azul);
+  }
+
+  /* Lista com tracinho → checks */
+  .prosa :global(ul) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1.5px solid var(--cor-linha);
+  }
+  .prosa :global(ul li) {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1.5px solid var(--cor-linha);
+  }
+  .prosa :global(ul li::before) {
+    content: '';
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin-top: 4px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007FFF' stroke-width='2.6'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+  /* Citação → bloco em destaque */
+  .prosa :global(blockquote) {
+    margin: 6px 0;
+    padding: clamp(22px, 3vw, 34px);
+    background: var(--cor-marinho);
+    color: var(--cor-branco);
+    border-radius: 18px;
+    box-shadow: 8px 8px 0 var(--cor-azul);
+  }
+  .prosa :global(blockquote p) {
+    font: 800 clamp(26px, 3vw, 42px) / 1.08 var(--fonte-titulo);
+    letter-spacing: -0.04em;
+  }
+  .prosa :global(blockquote strong) {
+    color: var(--cor-azul);
+  }
+</style>
