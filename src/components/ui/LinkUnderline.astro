@@ -1,0 +1,29 @@
+---
+/** Link em fonte mono com sublinhado azul grosso, usado em "ver o projeto →", "voltar ao topo ↑" etc. */
+interface Props {
+  href: string;
+  external?: boolean;
+  /** Cor do sublinhado. Use "marinho" sobre fundos azuis. */
+  line?: 'azul' | 'marinho';
+  class?: string;
+}
+
+const { href, external = false, line = 'azul', class: className } = Astro.props;
+const externalAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+<a class:list={['link-u', `link-u--${line}`, className]} href={href} {...externalAttrs}>
+  <slot />
+</a>
+
+<style>
+  .link-u {
+    font: 500 15px/1.2 var(--fonte-mono);
+    text-decoration: none;
+    border-bottom: 2px solid var(--cor-azul);
+    padding-bottom: 3px;
+  }
+  .link-u--marinho {
+    border-color: var(--cor-marinho);
+  }
+</style>
