@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/davipeterson/asimovjr-site/compare/v0.2.0...v0.3.0) (2026-11-27)
+
+
+### Novidades
+
+* hero com partículas, seção do pedido e fita ([#20](https://github.com/davipeterson/asimovjr-site/issues/20)) ([67ba63d](https://github.com/davipeterson/asimovjr-site/commit/67ba63d69f5bbbc7c8116912be72fbc81f1a6274))
+
 ## [0.2.0](https://github.com/davipeterson/asimovjr-site/compare/v0.1.0...v0.2.0) (2026-11-27)
 
 
